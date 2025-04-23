@@ -65,7 +65,7 @@ def save_to_db(books_data):
                 book['book_url']
             )
             books_data_transformed.append(book_tuple)
-        print(books_data_transformed)
+        # print(books_data_transformed)
         
         # 使用UPSERT语法实现去重更新
         insert_sql = """
@@ -107,11 +107,10 @@ if __name__ == "__main__":
     # 将ISBN填入到一个列表当中
     if ISBN_tuple:ISBN_list = [item[0] for item in ISBN_tuple]
     
-    test_isbn_list =[9787040599008,9787040599039]#test
+    test_isbn_list =[9787040300642,9787040599022,9787576601978,9787040610536``]#test
     
     
     # 调用孔夫子爬虫
-    all_books_data = []
     # 遍历每个ISBN进行爬取
     for idx, isbn in enumerate(test_isbn_list, 1):
         try:
@@ -122,16 +121,11 @@ if __name__ == "__main__":
             
             if books_data:
                 print(f"成功获取 {len(books_data)} 条数据")
-                all_books_data.extend(books_data)
-                
-                # 每10个ISBN入库一次
-                if idx % 10 == 0:
-                    save_to_db(all_books_data)
-                    all_books_data = []
-                    print(f"已批量入库 {idx} 个ISBN的数据")
+                save_to_db(books_data)
+                print(f"已入库 {idx}/{len(test_isbn_list)} 个ISBN的数据")
             
             # 添加延迟
-            time.sleep(2 + random.random()*3)
+            time.sleep(2 + random.random()*4)
             
         except Exception as e:
             print(f"处理ISBN {isbn} 时发生异常：{str(e)}")
@@ -140,10 +134,6 @@ if __name__ == "__main__":
                 f.write(f"{isbn}\n")
             continue
     
-    # 入库剩余数据
-    if all_books_data:
-        save_to_db(all_books_data)
-        print(f"最终批量入库 {len(all_books_data)} 条数据")
     
     print("所有ISBN处理完成!")
 
