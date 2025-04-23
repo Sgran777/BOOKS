@@ -47,22 +47,21 @@ def KongfzSpider(isbn_list):
         "Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Mobile/15E148 Safari/604.1",
         "Mozilla/5.0 (Linux; Android 13; SM-G991B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36"
     ]
-    
     url = "https://search.kongfz.com/pc-gw/search-web/client/pc/product/keyword/list"
+    
+    def get_random_user_agent():return random.choice(user_agents)
 
-    def get_random_user_agent():
-        return random.choice(user_agents)
     # 创建session对象
     session = requests.Session()
     session.headers.update({
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
         "Accept-Language": "en-US,en;q=0.5",
     })
-
+    
     # 每次请求前更新 User-Agent
     session.headers["User-Agent"] = get_random_user_agent()
     session.cookies.update(cookies)
-
+    
     # 定义翻页变量
     total_found = 0
     current_page = 1
@@ -105,21 +104,29 @@ def KongfzSpider(isbn_list):
             for item in book_list:
                 if isinstance(item, dict):
                     book_info = {
-                        'title' : item.get('title'),# 书名
-                        'isbn' : item.get('isbn'),# 国际标准书号
-                        'author' : item.get('author'),# 作者
-                        'publisher' : item.get('press'),# 出版社
-                        'source' : '孔夫子',# 平台
-                        'quality' : item.get('qualityText'),# 成色
-                        'current_price' : item.get('price'),# 卖价
-                        'book_url': item.get('link').get('pc')# 书籍链接
+                        # 书名
+                        'title' : item.get('title'),
+                        # 国际标准书号
+                        'isbn' : item.get('isbn'),
+                        # 作者
+                        'author' : item.get('author'),
+                        # 出版社
+                        'publisher' : item.get('press'),
+                        # 平台
+                        'source' : '孔夫子',
+                        # 成色
+                        'quality' : item.get('qualityText'),
+                        # 卖价
+                        'current_price' : item.get('price'),
+                        # 书籍链接
+                        'book_url': item.get('link').get('pc')
                     }
                     books_data.append(book_info)
                 else:
                     print(f"异常数据结构: {type(item)}")
             
             # 终止条件判断
-            # pages = 1# 测试
+            pages = 1# 测试
             if current_page == pages:
                 # 最后一页的实际数据量 = 总记录数 - (页数-1)*每页数量
                 actual_size = total_found - (pages - 1) * page_size
@@ -151,6 +158,7 @@ if __name__ == "__main__":
             books_data = KongfzSpider([isbn])
             if books_data:
                 print(f"成功获取 {len(books_data)} 条数据")
+                print(books_data[0])
             time.sleep(2 + random.random()*3)
         except Exception as e:
             print(f"处理ISBN {isbn} 时发生异常：{str(e)}")

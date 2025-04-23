@@ -107,7 +107,7 @@ if __name__ == "__main__":
     # 将ISBN填入到一个列表当中
     if ISBN_tuple:ISBN_list = [item[0] for item in ISBN_tuple]
     
-    test_isbn_list =[9787040300642,9787040599022,9787576601978,9787040610536``]#test
+    test_isbn_list =[9787040300642,9787040599022,9787576601978,9787040610536]#test
     
     
     # 调用孔夫子爬虫
