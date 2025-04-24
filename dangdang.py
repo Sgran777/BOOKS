@@ -47,21 +47,21 @@ def DangdangSpider(isbn_list):
         # 书名
         title = li.xpath('./a/@title')
         # 国际标准书号
-        isbn = isbn_list
+        isbn = isbn_list[0]
         # 作者
         author = li.xpath('./p[@class="search_book_author"]/span[1]/text()')
         # 出版社
-        publisher = li.xpath('.//p[@class="search_book_author"]//text()')
+        publisher = li.xpath('.//p[@class="search_book_author"]/span/a/text()')
         # 平台
         source = '当当'
         # 成色
         quality = '二手'
         if '全新' in title:quality = '全新'
         # 卖价
-        current_price = tree.xpath('./p[@class="price"]/span[@class="search_now_price"]//text()')
+        original_list = li.xpath('./p[@class="price"]/span[@class="search_now_price"][1]/text()')
+        current_price = [item.replace('¥', '') for item in original_list]
         # 书籍链接
-        book_url = li.xpath('.//a/@href')
-        
+        book_url = 'https:' + li.xpath('./a/@href')[0]
         # 构建字典
         book_info = {
             'title': title,
@@ -73,6 +73,9 @@ def DangdangSpider(isbn_list):
             'current_price': current_price,
             'book_url': book_url
         }
+        for key, value in book_info.items():
+            if isinstance(value, list):
+                book_info[key] = ''.join(map(str, value))
         books_data.append(book_info)
     
     return books_data
@@ -85,7 +88,7 @@ if __name__ == "__main__":
             books_data = DangdangSpider([isbn])
             if books_data:
                 print(f"成功获取 {len(books_data)} 条数据")
-                print(books_data[0])
+                print(books_data[0:5])
             time.sleep(2 + random.random()*3)
         except Exception as e:
             print(f"处理ISBN {isbn} 时发生异常：{str(e)}")
