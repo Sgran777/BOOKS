@@ -66,7 +66,7 @@ def KongfzSpider(isbn_list):
     total_found = 0
     current_page = 1
     page_size = 50
-    books_data = []  # 用于存储所有书籍信息的列表
+    books_data = []
     
     # 抓取书籍详情信息
     try:
@@ -95,8 +95,8 @@ def KongfzSpider(isbn_list):
             # 只在第一页获取总记录数
             if current_page == 1:
                 total_found = item_response.get('total', 0)
-                if (total_found % 50) == 0: pages = (total_found//50)
-                else:pages = (total_found//50)+1   
+                if (total_found % page_size) == 0: pages = (total_found//page_size)
+                else:pages = (total_found//page_size)+1   
                 print(f"ISBN: {isbn_list} 共找到 {total_found} 条记录，需要抓取 {pages} 页")
             
             

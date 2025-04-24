@@ -5,6 +5,7 @@ import sqlite3
 import time
 import random
 from Kongfz import KongfzSpider
+from dangdang import DangdangSpider
 
 
 # 读取专业表的ISBN
@@ -107,22 +108,24 @@ if __name__ == "__main__":
     # 将ISBN填入到一个列表当中
     if ISBN_tuple:ISBN_list = [item[0] for item in ISBN_tuple]
     
-    test_isbn_list =[9787040300642,9787040599022,9787576601978,9787040610536]#test
+    test_isbn_list =[9787040599008]#test
     
     
-    # 调用孔夫子爬虫
     # 遍历每个ISBN进行爬取
-    for idx, isbn in enumerate(test_isbn_list, 1):
+    for idx, isbn in enumerate(ISBN_list, 1):
         try:
-            print(f"\n正在处理第 {idx}/{len(test_isbn_list)} 个ISBN:{isbn}")
+            print(f"\n正在处理第 {idx}/{len(ISBN_list)} 个ISBN:{isbn}")
             
-            # 调用爬虫函数（单个ISBN）
-            books_data = KongfzSpider([isbn])
+            # 调用孔夫子爬虫
+            # books_data = KongfzSpider([isbn])
+            
+            # 调用当当爬虫
+            books_data = DangdangSpider(str(isbn))
             
             if books_data:
                 print(f"成功获取 {len(books_data)} 条数据")
                 save_to_db(books_data)
-                print(f"已入库 {idx}/{len(test_isbn_list)} 个ISBN的数据")
+                print(f"已入库 {idx}/{len(ISBN_list)} 个ISBN的数据")
             
             # 添加延迟
             time.sleep(2 + random.random()*4)
