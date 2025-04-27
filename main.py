@@ -17,7 +17,8 @@ def readisbn():
         conn = pymysql.connect(**conf)
         cursor = conn.cursor()
         # 执行SQL查询语句
-        sql = "SELECT ISBN FROM major"  # 替换your_table为实际表名
+        sql = "select major.ISBN FROM major WHERE major != '思想政治教育类'"
+        # "select major.ISBN FROM major WHERE NOT EXISTS( SELECT books.ISBN from books WHERE major.ISBN = books.ISBN group by ISBN);"
         cursor.execute(sql)
 
         # 获取查询结果
@@ -119,7 +120,7 @@ if __name__ == "__main__":
             # 调用孔夫子爬虫
             # books_data = KongfzSpider([isbn])
             
-            # 调用当当爬虫
+            # # 调用当当爬虫
             books_data = DangdangSpider(str(isbn))
             
             if books_data:
@@ -142,38 +143,3 @@ if __name__ == "__main__":
 
 
 # 定价规则
-# class PricingEngine:
-#     def calculate_price(self, book_id):
-#         # 获取基础数据
-#         platform_data = self.get_platform_data(book_id)
-        
-#         # 计算加权价格
-#         weights = {'闲鱼': 0.4, '孔夫子': 0.4, '拼多多': 0.2}
-#         weighted_sum = 0
-#         total_weight = 0
-        
-#         for platform in platform_data:
-#             avg_price = platform['avg_price']
-#             sales = platform['sales']
-#             weight = weights[platform['name']] * (1 + sales/1000)
-#             weighted_sum += avg_price * weight
-#             total_weight += weight
-        
-#         base_price = weighted_sum / total_weight
-        
-#         # 新旧程度调整
-#         condition = self.get_condition(book_id)
-#         adjustment = self.get_adjustment_factor(condition)
-        
-#         final_price = round(base_price * adjustment, 2)
-        
-#         return {
-#             'base_price': base_price,
-#             'adjustment': adjustment,
-#             'final_price': final_price
-#         }
-
-#     def get_adjustment_factor(self, condition_level):
-#         # 新旧程度调整系数表
-#         factors = {1: 0.3, 2: 0.5, 3: 0.7, 4: 0.85, 5: 1.0}
-#         return factors.get(condition_level, 1.0)

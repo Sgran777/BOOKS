@@ -27,8 +27,9 @@ def KongfzSpider(isbn_list):
         "reciever_area": "1001000000",
         "kfz_uuid": "b823309d-53d2-414d-83ac-64f4c05fa486",
         "_c_WBKFRo": "BF8PE7AgK0CJTRvK1OxlcGvw9BwdMoNKrMgWNHhd",
-        "PHPSESSID": "d78f661531be37a441df2322bbd510252a448086",
-        "kfz_trace": "b823309d-53d2-414d-83ac-64f4c05fa486|22667454|2856f83c9fb75f2e|-",
+        "kfz-tid": "5578160732a0a35f32564a071e5feeb9",
+        "PHPSESSID": "8ed97ae9bc4a26cdceabdf0d7cdc7cd3ca79c70a",
+        "kfz_trace": "b823309d-53d2-414d-83ac-64f4c05fa486|22667454|960cc32f64d5ce05|-",
         "_c_WBKFRo": "BF8PE7AgK0CJTRvK1OxlcGvw9BwdMoNKrMgWNHhd",
         "acw_tc": "1a0c651417448088497707101e00d7481fa4a908c959f6729883c2f6b242ce"
     }
@@ -126,7 +127,7 @@ def KongfzSpider(isbn_list):
                     print(f"异常数据结构: {type(item)}")
             
             # 终止条件判断
-            pages = 1# 测试
+            # pages = 1# 测试
             if current_page == pages:
                 # 最后一页的实际数据量 = 总记录数 - (页数-1)*每页数量
                 actual_size = total_found - (pages - 1) * page_size
@@ -137,7 +138,7 @@ def KongfzSpider(isbn_list):
             current_page += 1
             
             # 添加随机延迟防止封禁
-            time.sleep(60 + random.random()*10)
+            time.sleep(30 + random.random()*10)
 
     except requests.exceptions.HTTPError as http_err:
         print(f'HTTP 请求错误: {http_err}')

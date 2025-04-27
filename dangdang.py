@@ -65,12 +65,16 @@ def DangdangSpider(isbn_str: str):
                 # 国际标准书号
                 isbn = (f'{isbn_str}')
                 # 作者
-                author = li.xpath('./p[@class="search_book_author"]/span[1]/text()')
-                if author:author = author[0]  
-                if author == '无':author = '本书编写组'
-                else:author = '未知作者'
+                author = li.xpath('./p[@class="search_book_author"]/span[1]/a[1]/@title')
+                if author:
+                    if len(author) == 1 and author[0] == '无':
+                        author = '本书编写组'
+                    else:
+                        author = author[0] if author else '未知作者'
+                else:
+                    author = '未知作者'
                 # 出版社
-                publisher = li.xpath('.//p[@class="search_book_author"]/span/a/text()')
+                publisher = li.xpath('./p[@class="search_book_author"]/span[3]/a/@title')
                 # 平台
                 source = '当当'
                 # 成色
@@ -117,7 +121,7 @@ def DangdangSpider(isbn_str: str):
 
 
 if __name__ == "__main__":
-    isbn_list = [9787040599008]
+    isbn_list = [9787577212500]
     for idx, isbn in enumerate(isbn_list, 1):
         try:
             print(f"\n正在处理第 {idx}个ISBN: {isbn}")
