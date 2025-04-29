@@ -61,7 +61,7 @@ def DangdangSpider(isbn_str: str):
             
             for li in books_li:
                 # 书名
-                title = li.xpath('./a/@title')
+                title = li.xpath('./a/@title')[0]
                 # 国际标准书号
                 isbn = (f'{isbn_str}')
                 # 作者
@@ -78,8 +78,14 @@ def DangdangSpider(isbn_str: str):
                 # 平台
                 source = '当当'
                 # 成色
-                quality = '二手'
-                if '全新' in title:quality = '全新'
+                has_new = '全新' in title
+                has_used = '二手' in title
+                if has_new and has_used:  # 同时包含两个关键词
+                    quality = '二手'
+                elif has_new:              # 仅包含全新
+                    quality = '全新'
+                else:                      # 其他所有情况
+                    quality = '二手'
                 # 卖价
                 original_list = li.xpath('./p[@class="price"]/span[@class="search_now_price"][1]/text()')
                 current_price = [item.replace('¥', '') for item in original_list]
@@ -121,14 +127,14 @@ def DangdangSpider(isbn_str: str):
 
 
 if __name__ == "__main__":
-    isbn_list = [9787577212500]
+    isbn_list = [9787111558071]
     for idx, isbn in enumerate(isbn_list, 1):
         try:
             print(f"\n正在处理第 {idx}个ISBN: {isbn}")
             books_data = DangdangSpider(str(isbn))
             if books_data:
                 print(f"成功获取 {len(books_data)} 条数据")
-                print(books_data[0:5])
+                print(books_data)
             # time.sleep(2 + random.random()*3)
         except Exception as e:
             print(f"处理ISBN {isbn} 时发生异常：{str(e)}")
